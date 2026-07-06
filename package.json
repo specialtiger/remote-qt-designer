@@ -1,0 +1,51 @@
+{
+  "name": "remote-qt-designer",
+  "displayName": "Remote Qt Designer Connector",
+  "description": "Open remote .ui files with local Qt Designer seamlessly",
+  "publisher": "specialtiger",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/specialtiger/remote-qt-designer.git"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "extensionKind": [
+    "ui"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:remote-qt-designer.openLocal"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "remote-qt-designer.openLocal",
+        "title": "用本地 Qt Designer 打开"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "remote-qt-designer.openLocal",
+          "when": "resourceExtname == .ui",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Remote Qt Designer",
+      "properties": {
+        "remoteQtDesigner.designerPath": {
+          "type": "string",
+          "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\designer.exe",
+          "description": "本地电脑上 Qt Designer.exe 的绝对路径"
+        }
+      }
+    }
+  }
+}
