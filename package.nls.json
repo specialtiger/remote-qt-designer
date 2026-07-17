@@ -1,0 +1,11 @@
+{
+  "extension.displayName": "Remote Qt Designer Connector",
+  "extension.description": "Open remote .ui, .ts and .qml files with local Qt tools seamlessly",
+  "command.openLocal": "Open with local Qt Designer",
+  "command.openLinguist": "Open with local Qt Linguist",
+  "command.openQmlscene": "Open with local qmlscene",
+  "config.title": "Remote Qt Designer",
+  "config.designerPath.description": "Absolute path to local Qt Designer.exe",
+  "config.linguistPath.description": "Absolute path to local Qt Linguist.exe",
+  "config.qmlscenePath.description": "Absolute path to local qmlscene.exe"
+}

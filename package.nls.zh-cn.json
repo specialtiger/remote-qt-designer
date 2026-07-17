@@ -1,0 +1,11 @@
+{
+  "extension.displayName": "Remote Qt Designer Connector",
+  "extension.description": "无缝使用本地 Qt 工具打开远程的 .ui、.ts 和 .qml 文件",
+  "command.openLocal": "用本地 Qt Designer 打开",
+  "command.openLinguist": "用本地 Qt Linguist 打开",
+  "command.openQmlscene": "用本地 qmlscene 打开",
+  "config.title": "Remote Qt Designer",
+  "config.designerPath.description": "本地电脑上 Qt Designer.exe 的绝对路径",
+  "config.linguistPath.description": "本地电脑上 Qt Linguist.exe 的绝对路径",
+  "config.qmlscenePath.description": "本地电脑上 qmlscene.exe 的绝对路径"
+}

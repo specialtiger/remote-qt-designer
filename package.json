@@ -1,7 +1,7 @@
 {
   "name": "remote-qt-designer",
-  "displayName": "Remote Qt Designer Connector",
-  "description": "Open remote .ui files with local Qt Designer seamlessly",
+  "displayName": "%extension.displayName%",
+  "description": "%extension.description%",
   "publisher": "specialtiger",
   "repository": {
     "type": "git",
@@ -27,15 +27,15 @@
     "commands": [
       {
         "command": "remote-qt-designer.openLocal",
-        "title": "用本地 Qt Designer 打开"
+        "title": "%command.openLocal%"
       },
       {
         "command": "remote-qt-designer.openLinguist",
-        "title": "用本地 Qt Linguist 打开"
+        "title": "%command.openLinguist%"
       },
       {
         "command": "remote-qt-designer.openQmlscene",
-        "title": "用本地 qmlscene 打开"
+        "title": "%command.openQmlscene%"
       }
     ],
     "menus": {
@@ -58,22 +58,22 @@
       ]
     },
     "configuration": {
-      "title": "Remote Qt Designer",
+      "title": "%config.title%",
       "properties": {
         "remoteQtDesigner.designerPath": {
           "type": "string",
           "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\designer.exe",
-          "description": "本地电脑上 Qt Designer.exe 的绝对路径"
+          "description": "%config.designerPath.description%"
         },
         "remoteQtDesigner.linguistPath": {
           "type": "string",
           "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\linguist.exe",
-          "description": "本地电脑上 Qt Linguist.exe 的绝对路径"
+          "description": "%config.linguistPath.description%"
         },
         "remoteQtDesigner.qmlscenePath": {
           "type": "string",
           "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\qmlscene.exe",
-          "description": "本地电脑上 qmlscene.exe 的绝对路径"
+          "description": "%config.qmlscenePath.description%"
         }
       }
     }

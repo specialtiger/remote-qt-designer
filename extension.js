@@ -4,6 +4,47 @@ const path = require('path');
 const { exec } = require('child_process');
 const os = require('os');
 
+const language = vscode.env.language || 'en';
+
+const MESSAGES = {
+    'zh-cn': {
+        selectFile: '请先右键点击一个 {0}',
+        toolNotFound: '未找到本地 {0}，请检查路径: {1}',
+        openLocal: '正在使用本地 {0} 打开本地 file: {1}',
+        openRemote: '正在使用本地 {0} 打开: {1}',
+        syncingAssets: '[Remote Qt] 正在同步 QML 依赖及资产文件...',
+        launchFailed: '启动 {0} 失败: {1}',
+        syncedRemote: '[Remote Qt] 已同步到远程: {0}',
+        operationFailed: '操作失败: {0}',
+        extHintUi: '.ui 文件',
+        extHintTs: '.ts 文件',
+        extHintQml: '.qml 文件'
+    },
+    'en': {
+        selectFile: 'Please right-click on a {0} first.',
+        toolNotFound: 'Local {0} not found, please check path: {1}',
+        openLocal: 'Opening local file with local {0}: {1}',
+        openRemote: 'Opening with local {0}: {1}',
+        syncingAssets: '[Remote Qt] Syncing QML dependencies and assets...',
+        launchFailed: 'Failed to start {0}: {1}',
+        syncedRemote: '[Remote Qt] Synced to remote: {0}',
+        operationFailed: 'Operation failed: {1}',
+        extHintUi: '.ui file',
+        extHintTs: '.ts file',
+        extHintQml: '.qml file'
+    }
+};
+
+const currentMessages = MESSAGES[language.toLowerCase()] || MESSAGES['en'];
+
+function t(key, ...args) {
+    let msg = currentMessages[key] || MESSAGES['en'][key] || key;
+    args.forEach((val, index) => {
+        msg = msg.replace(`{${index}}`, val);
+    });
+    return msg;
+}
+
 const ASSET_EXTENSIONS = new Set([
     '.qml', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.json', '.qmldir',
     '.ttf', '.otf', '.woff', '.wav', '.mp3', '.mp4'
@@ -92,7 +133,7 @@ async function copyRemoteAssetsToLocal(uri, localTmpDir, parentName) {
 
 async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, fileExtensionHint, context) {
     if (!uri) {
-        vscode.window.showErrorMessage(`请先右键点击一个 ${fileExtensionHint}`);
+        vscode.window.showErrorMessage(t('selectFile', fileExtensionHint));
         return;
     }
 
@@ -101,7 +142,7 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
     let toolPath = config.get(configKey) || defaultToolPath;
 
     if (!fs.existsSync(toolPath)) {
-        vscode.window.showErrorMessage(`未找到本地 ${toolName}，请检查路径: ${toolPath}`);
+        vscode.window.showErrorMessage(t('toolNotFound', toolName, toolPath));
         return;
     }
 
@@ -109,12 +150,12 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
     if (uri.scheme === 'file') {
         const localFilePath = uri.fsPath;
         const fileName = path.basename(localFilePath);
-        vscode.window.showInformationMessage(`正在使用本地 ${toolName} 打开本地文件: ${fileName}`);
+        vscode.window.showInformationMessage(t('openLocal', toolName, fileName));
 
         const cmd = `"${toolPath}" "${localFilePath}"`;
         exec(cmd, (error) => {
             if (error) {
-                vscode.window.showErrorMessage(`启动 ${toolName} 失败: ${error.message}`);
+                vscode.window.showErrorMessage(t('launchFailed', toolName, error.message));
             }
         });
         return;
@@ -135,7 +176,7 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
 
         const isQmlFile = fileName.toLowerCase().endsWith('.qml');
         if (isQmlFile) {
-            vscode.window.setStatusBarMessage(`[Remote Qt] 正在同步 QML 依赖及资产文件...`, 3000);
+            vscode.window.setStatusBarMessage(t('syncingAssets'), 3000);
             await copyRemoteAssetsToLocal(uri, localTmpDir, parentName);
         } else if (!fs.existsSync(localParentDir)) {
             fs.mkdirSync(localParentDir, { recursive: true });
@@ -182,14 +223,14 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
             }
         }
 
-        vscode.window.showInformationMessage(`正在使用本地 ${toolName} 打开: ${fileName}`);
+        vscode.window.showInformationMessage(t('openRemote', toolName, fileName));
 
         // 4. 调用本地工具打开该文件
         // 使用双引号包裹路径防止空格导致解析失败
         const cmd = `"${toolPath}" "${localFilePath}"`;
         const toolProcess = exec(cmd, (error) => {
             if (error) {
-                vscode.window.showErrorMessage(`启动 ${toolName} 失败: ${error.message}`);
+                vscode.window.showErrorMessage(t('launchFailed', toolName, error.message));
             }
         });
 
@@ -211,7 +252,7 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
                                     const updatedContent = fs.readFileSync(target.localPath);
                                     // 写回远程
                                     await vscode.workspace.fs.writeFile(target.remoteUri, updatedContent);
-                                    vscode.window.setStatusBarMessage(`[Remote Qt] 已同步到远程: ${target.name}`, 3000);
+                                    vscode.window.setStatusBarMessage(t('syncedRemote', target.name), 3000);
                                 }
                             }
                         } catch (err) {
@@ -235,7 +276,7 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
         });
 
     } catch (error) {
-        vscode.window.showErrorMessage(`操作失败: ${error.message}`);
+        vscode.window.showErrorMessage(t('operationFailed', error.message));
     }
 }
 
@@ -247,7 +288,7 @@ function activate(context) {
             'designerPath',
             "D:\\Qt5.15\\Tools\\QtCreator\\bin\\designer.exe",
             'Designer',
-            '.ui 文件',
+            t('extHintUi'),
             context
         );
     });
@@ -259,7 +300,7 @@ function activate(context) {
             'linguistPath',
             "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\linguist.exe",
             'Linguist',
-            '.ts 文件',
+            t('extHintTs'),
             context
         );
     });
@@ -271,7 +312,7 @@ function activate(context) {
             'qmlscenePath',
             "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\qmlscene.exe",
             'qmlscene',
-            '.qml 文件',
+            t('extHintQml'),
             context
         );
     });
