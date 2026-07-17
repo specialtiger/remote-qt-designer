@@ -18,7 +18,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:remote-qt-designer.openLocal"
+    "onCommand:remote-qt-designer.openLocal",
+    "onCommand:remote-qt-designer.openLinguist",
+    "onCommand:remote-qt-designer.openQmlscene"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -26,6 +28,14 @@
       {
         "command": "remote-qt-designer.openLocal",
         "title": "用本地 Qt Designer 打开"
+      },
+      {
+        "command": "remote-qt-designer.openLinguist",
+        "title": "用本地 Qt Linguist 打开"
+      },
+      {
+        "command": "remote-qt-designer.openQmlscene",
+        "title": "用本地 qmlscene 打开"
       }
     ],
     "menus": {
@@ -33,6 +43,16 @@
         {
           "command": "remote-qt-designer.openLocal",
           "when": "resourceExtname == .ui",
+          "group": "navigation"
+        },
+        {
+          "command": "remote-qt-designer.openLinguist",
+          "when": "resourceExtname == .ts",
+          "group": "navigation"
+        },
+        {
+          "command": "remote-qt-designer.openQmlscene",
+          "when": "resourceExtname == .qml",
           "group": "navigation"
         }
       ]
@@ -44,6 +64,16 @@
           "type": "string",
           "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\designer.exe",
           "description": "本地电脑上 Qt Designer.exe 的绝对路径"
+        },
+        "remoteQtDesigner.linguistPath": {
+          "type": "string",
+          "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\linguist.exe",
+          "description": "本地电脑上 Qt Linguist.exe 的绝对路径"
+        },
+        "remoteQtDesigner.qmlscenePath": {
+          "type": "string",
+          "default": "D:\\Qt5.15\\5.15.2\\msvc2019_64\\bin\\qmlscene.exe",
+          "description": "本地电脑上 qmlscene.exe 的绝对路径"
         }
       }
     }
