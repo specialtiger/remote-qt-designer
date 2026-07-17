@@ -105,6 +105,21 @@ async function openFileWithLocalTool(uri, configKey, defaultToolPath, toolName, 
         return;
     }
 
+    // 如果是本地项目，直接打开本地文件并退出，不需要同步和临时文件夹
+    if (uri.scheme === 'file') {
+        const localFilePath = uri.fsPath;
+        const fileName = path.basename(localFilePath);
+        vscode.window.showInformationMessage(`正在使用本地 ${toolName} 打开本地文件: ${fileName}`);
+
+        const cmd = `"${toolPath}" "${localFilePath}"`;
+        exec(cmd, (error) => {
+            if (error) {
+                vscode.window.showErrorMessage(`启动 ${toolName} 失败: ${error.message}`);
+            }
+        });
+        return;
+    }
+
     try {
         // 2. 读取远程文件内容 (VS Code 会自动处理 SSH 远程读取)
         const remoteDocument = await vscode.workspace.fs.readFile(uri);
